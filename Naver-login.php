@@ -10,61 +10,7 @@
 
 	function winhttp($method, $url, $data = '', $referer = null, $type = null) { // Gogoomas naver cafe Winhttp Source, Thanks.
 																				 // IF Have Problem, contact to support@rainclab.net 
-		// Convert the data array into URL Parameters like a=b&foo=bar etc.
-		// $data = http_build_query($data);
 		
-		// parse the given URL
-		$url = parse_url ( $url );
-		
-		// extract host and path:
-		$host = $url ['host'];
-		$path = $url ['path'];
-		$res = '';
-		
-		// fsockopen 'http' or 'https'
-		try {
-			if ($url ['scheme'] == 'http') {
-				$fp = fsockopen ( $host, 80, $errno, $errstr, 300 );
-			} else if ($url ['scheme'] == 'https') {
-				$fp = fsockopen ( "ssl://" . $host, 443, $errno, $errstr, 30 );
-			}
-		} catch ( \Exeption $e ) {
-			echo "Socket Create Fail!\n";
-			return false;
-		}
-		
-		// open a socket connection on port 80 - timeout: 300 sec
-		$reqHeader = $method . ' ' . "$path HTTP/1.1\r\n";
-		$reqHeader .= "Host: $host\r\n";
-		if ($type != null)
-			$reqHeader .= "Content-Type: $type\r\n";
-		if ($referer != null)
-			$reqHeader .= "Referer: $referer\r\n";
-		$reqBody = $data;
-		$reqHeader .= "Content-length: " . strlen ( $reqBody ) . "\r\n";
-		$reqHeader .= "Connection: keep-alive\r\n\r\n";
-		
-		// check data
-		// echo "*Sent Header! \n" . $reqHeader . "\n";
-		// echo "*Sent Body! \n" . $reqBody . "\n";
-		
-		/* send request */
-		fwrite ( $fp, $reqHeader );
-		fwrite ( $fp, $reqBody );
-		while ( ! feof ( $fp ) ) {
-			$res .= fgets ( $fp, 1024 );
-		}
-		fclose ( $fp );
-		
-		// split the result header from the content
-		$result = explode ( "\r\n\r\n", $res, 2 );
-		$header = isset ( $result [0] ) ? $result [0] : '';
-		$content = isset ( $result [1] ) ? $result [1] : '';
-		
-		return array (
-				'body' => $content,
-				'header' => $header 
-		);
 	}
 	function json_encode2($data) {
 		switch (gettype($data)) {
